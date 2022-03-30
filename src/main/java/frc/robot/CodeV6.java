@@ -288,11 +288,11 @@ public class CodeV6 extends TimedRobot {
             //Prevent the AutoAim from becoming too powerful
             if(LockBasedTurn > 1)
             {
-                LockBasedMove = 1;
+                LockBasedTurn = 1;
             }
             else if(LockBasedTurn < -1)
             {
-                LockBasedMove = -1;
+                LockBasedTurn = -1;
             }
            
            //If in range and on target, do something, otherwise do something else
