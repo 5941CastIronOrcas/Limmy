@@ -27,9 +27,9 @@ public class CodeV6 extends TimedRobot {
     public VictorSP RearLeftMotor = new VictorSP(3);
     public VictorSP ClimberMotor1 = new VictorSP(4);
     public VictorSP ClimberMotor2 = new VictorSP(5);
-    public VictorSP AuxilliaryMotor1 = new VictorSP(6);
-    public VictorSP AuxilliaryMotor2 = new VictorSP(7);
-    public VictorSP AuxilliaryMotor3 = new VictorSP(8);
+    public VictorSP LoaderMotor = new VictorSP(6);
+    public VictorSP LaunchMotor = new VictorSP(7);
+    public VictorSP ArmMotor = new VictorSP(8);
     public double TargetScreenX;
     public double TargetScreenXOld;
     public double TargetScreenY;
@@ -61,7 +61,10 @@ public class CodeV6 extends TimedRobot {
     Left stick to move and turn
     Right Bumper: Raise Climber
     Left Bumper: Lower Climber
-    
+    Right Trigger (Hold): Enable automatic aiming and ranging
+    A Button: Launch Motor
+    B Button: Arm Motor
+    X Button: Loader Motor
     
 
     During autonomous, it will Drive backwards for 2 seconds at half voltage, then enable targeting systems.  
@@ -252,6 +255,33 @@ public class CodeV6 extends TimedRobot {
         {
             ClimberMotor1.set(0);
             ClimberMotor2.set(0);
+        }
+        
+        if(Controller.getAButton())
+        {
+            LaunchMotor.set(1);
+        }
+        else
+        {
+            LaunchMotor.set(0);
+        }
+        
+        if(Controller.getBButton())
+        {
+            ArmMotor.set(1);
+        }
+        else
+        {
+            ArmMotor.set(0);
+        }
+
+        if(Controller.getXButton())
+        {
+            LoaderMotor.set(1);
+        }
+        else
+        {
+            LoaderMotor.set(0);
         }
         
         
