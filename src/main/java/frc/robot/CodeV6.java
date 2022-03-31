@@ -8,6 +8,7 @@ import org.opencv.imgproc.Imgproc;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -17,10 +18,13 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.vision.VisionThread;
+
+
  
 public class CodeV6 extends TimedRobot {
    
     public XboxController Controller = new XboxController(0);
+    PowerDistribution testPDP = new PowerDistribution();
     public VictorSP FrontRightMotor = new VictorSP(0);
     public VictorSP RearRightMotor = new VictorSP(1);
     public VictorSP FrontLeftMotor = new VictorSP(2);
