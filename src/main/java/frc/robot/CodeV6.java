@@ -25,11 +25,11 @@ public class CodeV6 extends TimedRobot {
     public VictorSP RearRightMotor = new VictorSP(1);
     public VictorSP FrontLeftMotor = new VictorSP(2);
     public VictorSP RearLeftMotor = new VictorSP(3);
-    public VictorSP LaunchMotor1 = new VictorSP(4);
-    public VictorSP LaunchMotor2 = new VictorSP(5);
-    public VictorSP IntakeMotorMain = new VictorSP(6);
-    public VictorSP IntakeMotorSecondary = new VictorSP(7);
-    public VictorSP LoaderMotor = new VictorSP(8);
+    public VictorSP ClimberMotor1 = new VictorSP(4);
+    public VictorSP ClimberMotor2 = new VictorSP(5);
+    public VictorSP AuxilliaryMotor1 = new VictorSP(6);
+    public VictorSP AuxilliaryMotor2 = new VictorSP(7);
+    public VictorSP AuxilliaryMotor3 = new VictorSP(8);
     public double TargetScreenX;
     public double TargetScreenXOld;
     public double TargetScreenY;
@@ -59,10 +59,10 @@ public class CodeV6 extends TimedRobot {
     /*
     Instructions:
     Left stick to move and turn
-    Hold Right Button to enable Locking
-    Hold A to Fire
-    Left Trigger to use Main loader motor
-    Right Trigger to use Secondary loader motor
+    Hold Right Trigger to enable Locking (locking power is multiplied by how much the trigger is held down)
+    
+    
+    
 
     During autonomous, it will Drive backwards for 2 seconds at half voltage, then enable targeting systems.  
     
@@ -238,27 +238,7 @@ public class CodeV6 extends TimedRobot {
         RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + LockBasedMove)));
  
         //Manual Controls for non-drive motors:
-        if(Controller.getAButton())
-        {
-            LaunchMotor1.set(1);
-            LaunchMotor2.set(1);
-            LoaderMotor.set(1);
-        }
-        else
-        {
-            LaunchMotor1.set(0);
-            LaunchMotor2.set(0);
-            LoaderMotor.set(0);
-        }
-        IntakeMotorMain.set(Controller.getLeftTriggerAxis());
-        if(Controller.getBButton())
-        {
-            IntakeMotorSecondary.set(1);
-        }
-        else
-        {
-            IntakeMotorSecondary.set(0);
-        }
+        
         
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
     }
