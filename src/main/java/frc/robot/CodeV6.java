@@ -238,6 +238,8 @@ public class CodeV6 extends TimedRobot {
         RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + LockBasedMove)));
  
         //Manual Controls for non-drive motors:
+        ClimberMotor1.set(Controller.getLeftTriggerAxis());
+        ClimberMotor2.set(Controller.getLeftTriggerAxis());
         
         
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
