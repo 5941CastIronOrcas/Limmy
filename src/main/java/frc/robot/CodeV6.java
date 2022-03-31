@@ -60,7 +60,7 @@ public class CodeV6 extends TimedRobot {
     Instructions:
     Left stick to move and turn
     Hold Right Trigger to enable Locking (locking power is multiplied by how much the trigger is held down)
-    
+    Left Trigger: Climber
     
     
 
