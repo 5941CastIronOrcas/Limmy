@@ -59,8 +59,8 @@ public class CodeV6 extends TimedRobot {
     /*
     Instructions:
     Left stick to move and turn
-    Hold Right Trigger to enable Locking (locking power is multiplied by how much the trigger is held down)
-    Left Trigger: Climber
+    Right Bumper: Raise Climber
+    Left Bumper: Lower Climber
     
     
 
@@ -238,8 +238,21 @@ public class CodeV6 extends TimedRobot {
         RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + LockBasedMove)));
  
         //Manual Controls for non-drive motors:
-        ClimberMotor1.set(Controller.getLeftTriggerAxis());
-        ClimberMotor2.set(Controller.getLeftTriggerAxis());
+        if(Controller.getRightBumper())
+        {
+            ClimberMotor1.set(1);
+            ClimberMotor2.set(1);
+        }
+        else if(Controller.getLeftBumper())
+        {
+            ClimberMotor1.set(-1);
+            ClimberMotor2.set(-1);
+        }
+        else
+        {
+            ClimberMotor1.set(0);
+            ClimberMotor2.set(0);
+        }
         
         
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
