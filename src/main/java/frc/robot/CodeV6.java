@@ -18,13 +18,12 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.vision.VisionThread;
-
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  
 public class CodeV6 extends TimedRobot {
    
     public XboxController Controller = new XboxController(0);
-    PowerDistribution testPDP = new PowerDistribution();
     public VictorSP FrontRightMotor = new VictorSP(0);
     public VictorSP RearRightMotor = new VictorSP(1);
     public VictorSP FrontLeftMotor = new VictorSP(2);
@@ -34,6 +33,9 @@ public class CodeV6 extends TimedRobot {
     public VictorSP LoaderMotor = new VictorSP(6);
     public VictorSP LaunchMotor = new VictorSP(7);
     public VictorSP ArmMotor = new VictorSP(8);
+    //public CANSparkMax LoaderMotorCAN = new CANSparkMax(0, MotorType.kBrushless);
+    //public CANSparkMax LaunchMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
+    //public CANSparkMax ArmMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
     public double TargetScreenX;
     public double TargetScreenXOld;
     public double TargetScreenY;
@@ -93,6 +95,9 @@ public class CodeV6 extends TimedRobot {
         LockTurnD = 0.0005;
         CameraScreenWidth = 640;
         CameraScreenHeight = 480;
+
+        
+        
         
         //Create a new USB camera
         UsbCamera camera = CameraServer.startAutomaticCapture();
@@ -272,7 +277,7 @@ public class CodeV6 extends TimedRobot {
         
         if(Controller.getBButton())
         {
-            ArmMotor.set(1);
+            ArmMotor.set(1.0);
         }
         else
         {
@@ -281,7 +286,7 @@ public class CodeV6 extends TimedRobot {
 
         if(Controller.getXButton())
         {
-            LoaderMotor.set(1);
+            LoaderMotor.set(0.5);
         }
         else
         {
