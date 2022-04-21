@@ -57,6 +57,8 @@ public class CodeV6 extends TimedRobot {
     public double RangeP;
     public double RangeD;
     public double AutoStuffMultiplier;
+    public float LoadTimer;
+    public float PreventFiringTimer;
     
 
     private final Object CAMERA_LOCK = new Object();
@@ -87,7 +89,9 @@ public class CodeV6 extends TimedRobot {
         RearRightMotor.setInverted(true);
         //FrontLeftMotor.setInverted(true);
         //RearLeftMotor.setInverted(true);
-        IdealRange = 100;
+        LoaderMotor.setInverted(true);
+        LaunchMotor.setInverted(true);
+        IdealRange = 40;
         TurnMargin = 0.1;
         RangeP = 0.02;
         RangeD = 0.0;
@@ -139,6 +143,10 @@ public class CodeV6 extends TimedRobot {
         synchronized (CAMERA_LOCK) {
             TargetScreenX = cameraContourX;
         }
+        if(TargetScreenX < 0)
+        {
+            TargetScreenX = CameraScreenWidth / 2.0f;
+        }
         //Witchcraft transliterated from Python to make distance sensor work
         int Counter = DistanceSensor.getBytesReceived();
         if(Counter > 8)
@@ -166,6 +174,7 @@ public class CodeV6 extends TimedRobot {
    
     public void teleopPeriodic() //Does this every 0.02 seconds whenever the robot is teleoperated
     {
+        LoadTimer -= 0.02f;
         //Use the right trigger to enable locking
         if(Math.abs(Controller.getRightTriggerAxis()) > 0.05)
         {
@@ -266,14 +275,26 @@ public class CodeV6 extends TimedRobot {
             ClimberMotor2.set(0);
         }
         
-        if(Controller.getAButton())
+        if(Controller.getAButtonPressed())
         {
             LaunchMotor.set(1);
+            LoadTimer = 1f;
+        }
+        if(Controller.getAButton() && LoadTimer < 0)
+        {
+            LoaderMotor.set(1);
         }
         else
         {
-            LaunchMotor.set(0);
+            LoaderMotor.set(0);
         }
+        if(Controller.getAButtonReleased())
+        {
+            LaunchMotor.set(0);
+            LoaderMotor.set(0);
+        }
+        
+        
         
         if(Controller.getBButton())
         {
@@ -284,14 +305,7 @@ public class CodeV6 extends TimedRobot {
             ArmMotor.set(0);
         }
 
-        if(Controller.getXButton())
-        {
-            LoaderMotor.set(0.5);
-        }
-        else
-        {
-            LoaderMotor.set(0);
-        }
+        
         
         
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
