@@ -280,8 +280,20 @@ public class CodeV6 extends TimedRobot {
         //Launch Sequence
         if(Controller.getAButtonPressed())
         {
-            LaunchMotor.set(1);
             LoadTimer = 1f;
+            PreventFiringTimer = 0.25f;
+        }
+        if(Controller.getAButton() && PreventFiringTimer > 0)
+        {
+            LoaderMotor.set(-0.25);
+        }
+        else
+        {
+            LoaderMotor.set(0);
+        }
+        if(Controller.getAButton() && PreventFiringTimer < 0)
+        {
+            LaunchMotor.set(1);
         }
         if(Controller.getAButton() && LoadTimer < 0)
         {
