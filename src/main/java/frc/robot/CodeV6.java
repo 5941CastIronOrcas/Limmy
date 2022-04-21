@@ -175,6 +175,7 @@ public class CodeV6 extends TimedRobot {
     public void teleopPeriodic() //Does this every 0.02 seconds whenever the robot is teleoperated
     {
         LoadTimer -= 0.02f;
+        PreventFiringTimer -= 0.02f;
         //Use the right trigger to enable locking
         if(Math.abs(Controller.getRightTriggerAxis()) > 0.05)
         {
@@ -280,10 +281,10 @@ public class CodeV6 extends TimedRobot {
         //Launch Sequence
         if(Controller.getAButtonPressed())
         {
-            LoadTimer = 1f;
-            PreventFiringTimer = 0.25f;
+            LoadTimer = 1.25f;
+            PreventFiringTimer = 0.15f;
         }
-        if(Controller.getAButton() && PreventFiringTimer > 0)
+        if(Controller.getAButton() && PreventFiringTimer > 0f)
         {
             LoaderMotor.set(-0.25);
         }
@@ -299,10 +300,7 @@ public class CodeV6 extends TimedRobot {
         {
             LoaderMotor.set(1);
         }
-        else
-        {
-            LoaderMotor.set(0);
-        }
+
         if(Controller.getAButtonReleased())
         {
             LaunchMotor.set(0);
@@ -310,15 +308,14 @@ public class CodeV6 extends TimedRobot {
         }
         
         //Manual Loader control
-        if(Controller.getBButtonPressed())
+        if(Controller.getBButton())
         {
-            LoaderMotor.set(1f);
+            LoaderMotor.set(1);
         }
         if(Controller.getBButtonReleased())
         {
-            LoaderMotor.set(0f);
+            LoaderMotor.set(0);
         }
-        
         //Arm
         if(Controller.getBButton())
         {
