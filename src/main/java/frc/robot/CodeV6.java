@@ -259,6 +259,8 @@ public class CodeV6 extends TimedRobot {
         RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + LockBasedMove)));
  
         //Manual Controls for non-drive motors:
+        
+        //Climber
         if(Controller.getRightBumper())
         {
             ClimberMotor1.set(1);
@@ -275,6 +277,7 @@ public class CodeV6 extends TimedRobot {
             ClimberMotor2.set(0);
         }
         
+        //Launch Sequence
         if(Controller.getAButtonPressed())
         {
             LaunchMotor.set(1);
@@ -294,8 +297,17 @@ public class CodeV6 extends TimedRobot {
             LoaderMotor.set(0);
         }
         
+        //Manual Loader control
+        if(Controller.getBButtonPressed())
+        {
+            LoaderMotor.set(1f);
+        }
+        if(Controller.getBButtonReleased())
+        {
+            LoaderMotor.set(0f);
+        }
         
-        
+        //Arm
         if(Controller.getBButton())
         {
             ArmMotor.set(1.0);
