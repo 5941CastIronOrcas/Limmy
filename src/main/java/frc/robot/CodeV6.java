@@ -57,8 +57,7 @@ public class CodeV6 extends TimedRobot {
     public double RangeP;
     public double RangeD;
     public double AutoStuffMultiplier;
-    public float LoadTimer;
-    public float PreventFiringTimer;
+    public float LaunchSequenceTimer;
     
 
     private final Object CAMERA_LOCK = new Object();
@@ -174,8 +173,8 @@ public class CodeV6 extends TimedRobot {
    
     public void teleopPeriodic() //Does this every 0.02 seconds whenever the robot is teleoperated
     {
-        LoadTimer -= 0.02f;
-        PreventFiringTimer -= 0.02f;
+        //LoadTimer -= 0.02f;
+        //PreventFiringTimer -= 0.02f;
         //Use the right trigger to enable locking
         if(Math.abs(Controller.getRightTriggerAxis()) > 0.05)
         {
@@ -254,10 +253,10 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn = 0;
         }
         //Final Drive motors voltage setting:
-        FrontRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-LockBasedTurn + LockBasedMove)));
-        RearRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-LockBasedTurn + LockBasedMove)));
-        FrontLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + LockBasedMove)));
-        RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + LockBasedMove)));
+        FrontRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
         
@@ -278,34 +277,20 @@ public class CodeV6 extends TimedRobot {
             ClimberMotor2.set(0);
         }
         
-        //Launch Sequence
-        if(Controller.getAButtonPressed())
-        {
-            LoadTimer = 1.25f;
-            PreventFiringTimer = 0.15f;
-        }
-        if(Controller.getAButton() && PreventFiringTimer > 0f)
-        {
-            LoaderMotor.set(-0.25);
-        }
-        else
-        {
-            LoaderMotor.set(0);
-        }
-        if(Controller.getAButton() && PreventFiringTimer < 0)
-        {
-            LaunchMotor.set(1);
-        }
-        if(Controller.getAButton() && LoadTimer < 0)
-        {
-            LoaderMotor.set(1);
-        }
-
-        if(Controller.getAButtonReleased())
-        {
-            LaunchMotor.set(0);
-            LoaderMotor.set(0);
-        }
+         //Launch Sequence
+         if(Controller.getAButtonPressed())
+         {
+             LaunchSequenceInit();
+         }
+         if(Controller.getAButton())
+         {
+             LaunchSequencePeriodic();
+         }
+         if(Controller.getAButtonReleased())
+         {
+             LaunchSequenceAbort();
+         }
+ 
         
         //Manual Loader control
         if(Controller.getBButton())
@@ -331,6 +316,37 @@ public class CodeV6 extends TimedRobot {
         
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
     }
+
+    public void LaunchSequenceInit()
+    {
+        LaunchSequenceTimer = 0;
+    }
+    public void LaunchSequencePeriodic()
+    {
+        LaunchSequenceTimer += 0.02f;
+        if(LaunchSequenceTimer < 0.25)
+        {
+            LaunchMotor.set(0);
+            LoaderMotor.set(-0.25f);
+        }
+        else if(LaunchSequenceTimer < 1.1)
+        {
+            LaunchMotor.set(1);
+            LoaderMotor.set(0);
+        }
+        else if(LaunchSequenceTimer > 1.1)
+        {
+            LaunchMotor.set(1);
+            LoaderMotor.set(1);
+        }
+ 
+    }
+    public void LaunchSequenceAbort()
+    {
+        LaunchMotor.set(0);
+        LoaderMotor.set(0);
+    }
+
  
     public void autonomousInit() //Does this when autonomous is started
     {
