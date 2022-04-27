@@ -33,6 +33,8 @@ public class CodeV6 extends TimedRobot {
     public VictorSP LoaderMotor = new VictorSP(6);
     public VictorSP LaunchMotor = new VictorSP(7);
     public VictorSP ArmMotor = new VictorSP(8);
+    public VictorSP Light = new VictorSP(9);
+
     //public CANSparkMax LoaderMotorCAN = new CANSparkMax(0, MotorType.kBrushless);
     //public CANSparkMax LaunchMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
     //public CANSparkMax ArmMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
@@ -79,6 +81,7 @@ public class CodeV6 extends TimedRobot {
     Notes: 
     On some controllers (like ours), up on the joystick is negative
     On motors Positive *appears* to be clockwise (but double-check anyway)
+    Cam IP: roboRIO-59410FRC.local:1181/?action=stream
     */
    
     public void robotInit() //Does all this when the robot is started
@@ -92,10 +95,12 @@ public class CodeV6 extends TimedRobot {
         LaunchMotor.setInverted(true);
         IdealRange = 40;
         TurnMargin = 0.1;
+        //RangeP = 0.0;
         RangeP = 0.02;
         RangeD = 0.0;
+        //LockTurnP = 0.0;
         LockTurnP = 1.0 / 480.0;
-        LockTurnD = 0.0005;
+        LockTurnD = 0.0000;
         CameraScreenWidth = 640;
         CameraScreenHeight = 480;
 
@@ -190,7 +195,7 @@ public class CodeV6 extends TimedRobot {
         //If the driver has locking enabled
         if(LockingEnabled)
         {
-           
+            Light.set(1);
             //Turning equation for locking (a PID controller):
             LockBasedTurn =  (LockTurnP * (TargetScreenX - (0.5 *  CameraScreenWidth))) + (LockTurnD * ((TargetScreenX - TargetScreenXOld) / 0.02));
            TargetScreenXOld = TargetScreenX;
@@ -242,6 +247,7 @@ public class CodeV6 extends TimedRobot {
             //If Locking is disabled, do nothing
             LockBasedTurn = 0;
             LockBasedMove = 0;
+            Light.set(0);
         }
         //If something has gone horribly wrong, just disable the AutoRanger and/or AutoAimer
         if(Double.isNaN(LockBasedMove))
@@ -253,10 +259,10 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn = 0;
         }
         //Final Drive motors voltage setting:
-        FrontRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        FrontLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
         
