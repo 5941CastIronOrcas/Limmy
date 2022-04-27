@@ -310,7 +310,7 @@ public class CodeV6 extends TimedRobot {
             LoaderMotor.set(0);
         }
         //Arm
-        if(Controller.getBButton())
+        if(Controller.getXButton())
         {
             ArmMotor.set(1.0);
         }
