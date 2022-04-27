@@ -261,10 +261,10 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn = 0;
         }
         //Final Drive motors voltage setting:
-        FrontRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearRightMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        FrontLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearLeftMotor.set(-Math.sin(Math.PI * 0.5 * Controller.getLeftY()) + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontRightMotor.set(-Controller.getLeftY() - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearRightMotor.set(-Controller.getLeftY() - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontLeftMotor.set(-Controller.getLeftY() + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set(-Controller.getLeftY() + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
         
