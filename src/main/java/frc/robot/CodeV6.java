@@ -1,10 +1,10 @@
 package frc.robot;
-
-
+ 
+ 
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
-
+ 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.vision.VisionThread;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+//import com.revrobotics.CANSparkMax;
+//import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  
 public class CodeV6 extends TimedRobot {
    
@@ -34,7 +34,7 @@ public class CodeV6 extends TimedRobot {
     public VictorSP LaunchMotor = new VictorSP(7);
     public VictorSP ArmMotor = new VictorSP(8);
     public VictorSP Light = new VictorSP(9);
-
+ 
     //public CANSparkMax LoaderMotorCAN = new CANSparkMax(0, MotorType.kBrushless);
     //public CANSparkMax LaunchMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
     //public CANSparkMax ArmMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
@@ -60,25 +60,25 @@ public class CodeV6 extends TimedRobot {
     public double RangeD;
     public double AutoStuffMultiplier;
     public float LaunchSequenceTimer;
-    
-
+    public boolean LidarIsBroken;
+   
+ 
     private final Object CAMERA_LOCK = new Object();
     private double cameraContourX;
-    
+   
     /*
     Instructions:
     Left stick to move and turn
     Right Bumper: Raise Climber
     Left Bumper: Lower Climber
-    Right Trigger (Hold): Enable automatic aiming and ranging
-    A Button: Launch Motor
-    B Button: Arm Motor
-    X Button: Loader Motor
-    
-
+    Right Trigger (Hold; analog): Enable automatic aiming and ranging
+    A Button (Hold): Launch Sequence
+    B Button (Hold): Loading Motor
+    X Button:
+   
     During autonomous, it will Drive backwards for 2 seconds at half voltage, then enable targeting systems.  
-    
-    Notes: 
+   
+    Notes:
     On some controllers (like ours), up on the joystick is negative
     On motors Positive *appears* to be clockwise (but double-check anyway)
     Cam IP: roboRIO-59410FRC.local:1181/?action=stream
@@ -99,19 +99,19 @@ public class CodeV6 extends TimedRobot {
         TurnMargin = 0.1;
         //RangeP = 0.0;
         RangeP = 0.02;
-        RangeD = 0.0;
+        RangeD = 0.000;
         //LockTurnP = 0.0;
-        LockTurnP = 1.0 / 480.0;
-        LockTurnD = 0.0000;
+        LockTurnP = 0.8 / 640.0;
+        //LockTurnD = 0.0005;
         CameraScreenWidth = 640;
         CameraScreenHeight = 480;
-
-        
-        
-        
+ 
+       
+       
+       
         //Create a new USB camera
         UsbCamera camera = CameraServer.startAutomaticCapture();
-
+ 
         //Activate the GripePipeline (Witchcraft)
         new VisionThread(camera, new GripPipeline(), (pipeline) -> {
             MatOfPoint[] objs = pipeline.filterContoursOutput().toArray(new MatOfPoint[0]);
@@ -140,8 +140,8 @@ public class CodeV6 extends TimedRobot {
                 cameraContourX = camWidth;
             }
         }).start();
-
-        
+ 
+       
     }
     public void robotPeriodic() //Does this every 0.02 seconds whenever the robot is running
     {
@@ -149,10 +149,12 @@ public class CodeV6 extends TimedRobot {
         synchronized (CAMERA_LOCK) {
             TargetScreenX = cameraContourX;
         }
+        //Anti-Object-Permanence
         if(TargetScreenX < 0)
         {
             TargetScreenX = CameraScreenWidth / 2.0f;
         }
+       
         //Witchcraft transliterated from Python to make distance sensor work
         int Counter = DistanceSensor.getBytesReceived();
         if(Counter > 8)
@@ -162,26 +164,41 @@ public class CodeV6 extends TimedRobot {
           if(bytes_serial[0] == 0x59 && bytes_serial[1] == 0x59)
           {
             SensorDistance = bytes_serial[2] + bytes_serial[3] * 256.0;
+            LidarIsBroken = false;
           }
         }
         else //Insurance against Errors:
         {
             SensorDistance = IdealRange;
-            System.out.println("LIDAR is very confused; AutoRanger disabled.");
+            LidarIsBroken = true;
+           
         }
         if(SensorDistance <= 0)
         {
             SensorDistance = IdealRange;
-            System.out.println("Sensor Distance is Erroring to Zero or Negative Value; AutoRanger disabled.");
+            LidarIsBroken = true;
+           
         }
+       
+        //If the Lidar isn't working, just drive forward at 0.25x voltage until it works again
+        if(LidarIsBroken && TargetScreenX >= 0)
+        {
+            System.out.println("Lidar Nonfunctional; Camera-Ranging Activated");
+            SensorDistance = IdealRange * 1.25f;
+        }
+        else if(LidarIsBroken && TargetScreenX < 0)
+        {
+            System.out.println("Lidar Nonfunctional; Could not switch to Camera-Ranging");
+            SensorDistance = IdealRange;
+        }
+ 
+        //Put the used Sensor Distance up on the dashboard
         SmartDashboard.putNumber("Sensor Distance", SensorDistance);
     }
-    
+   
    
     public void teleopPeriodic() //Does this every 0.02 seconds whenever the robot is teleoperated
     {
-        //LoadTimer -= 0.02f;
-        //PreventFiringTimer -= 0.02f;
         //Use the right trigger to enable locking
         if(Math.abs(Controller.getRightTriggerAxis()) > 0.05)
         {
@@ -193,7 +210,7 @@ public class CodeV6 extends TimedRobot {
             LockingEnabled = false;
             AutoStuffMultiplier = 0;
         }
-        
+       
         //If the driver has locking enabled
         if(LockingEnabled)
         {
@@ -234,13 +251,13 @@ public class CodeV6 extends TimedRobot {
                 LockBasedMove = 0;
             }
             //Prevent the AutoRanger from becoming too powerful
-            if(LockBasedMove > 1)
+            if(LockBasedMove > 0.25f)
             {
-                LockBasedMove = 1;
+                LockBasedMove = 0.25f;
             }
-            else if(LockBasedMove < -1)
+            else if(LockBasedMove < -0.25f)
             {
-                LockBasedMove = -1;
+                LockBasedMove = -0.25f;
             }
            
         }
@@ -261,13 +278,13 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn = 0;
         }
         //Final Drive motors voltage setting:
-        FrontRightMotor.set(-Controller.getLeftY() - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearRightMotor.set(-Controller.getLeftY() - Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (-Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        FrontLeftMotor.set(-Controller.getLeftY() + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearLeftMotor.set(-Controller.getLeftY() + Math.sin(Math.PI * 0.5 * Controller.getLeftX()) + (AutoStuffMultiplier * (Math.sin(Math.PI * 0.5 * LockBasedTurn) + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontRightMotor.set(-Controller.getLeftY() - Controller.getLeftX() + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearRightMotor.set(-Controller.getLeftY() - Controller.getLeftX() + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontLeftMotor.set(-Controller.getLeftY() + Controller.getLeftX() + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set(-Controller.getLeftY() + Controller.getLeftX() + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
-        
+       
         //Climber
         if(Controller.getRightBumper())
         {
@@ -284,7 +301,7 @@ public class CodeV6 extends TimedRobot {
             ClimberMotor1.set(0);
             ClimberMotor2.set(0);
         }
-        
+       
          //Launch Sequence
          if(Controller.getAButtonPressed())
          {
@@ -299,7 +316,7 @@ public class CodeV6 extends TimedRobot {
              LaunchSequenceAbort();
          }
  
-        
+       
         //Manual Loader control
         if(Controller.getBButton())
         {
@@ -318,13 +335,12 @@ public class CodeV6 extends TimedRobot {
         {
             ArmMotor.set(0);
         }
-
-        
-        
-        
+ 
+       
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
+        
     }
-
+ 
     public void LaunchSequenceInit()
     {
         LaunchSequenceTimer = 0;
@@ -354,7 +370,7 @@ public class CodeV6 extends TimedRobot {
         LaunchMotor.set(0);
         LoaderMotor.set(0);
     }
-
+ 
  
     public void autonomousInit() //Does this when autonomous is started
     {
@@ -391,11 +407,11 @@ public class CodeV6 extends TimedRobot {
            //If in range and on target, do something, otherwise do something else
             if(Math.abs(LockBasedTurn) <= TurnMargin && Math.abs(LockBasedMove) <= 0.1)
             {
-                
+               
             }
             else
             {
-                
+               
             }
            
             //if pointing close enough to the target, drive forward or backwards to get in the correct range
@@ -417,7 +433,7 @@ public class CodeV6 extends TimedRobot {
             {
                 LockBasedMove = -1;
             }
-
+ 
             //Final Drive Motor Voltage Setting:
             FrontRightMotor.set(-LockBasedTurn + LockBasedMove);
             RearRightMotor.set(-LockBasedTurn + LockBasedMove);
@@ -426,6 +442,4 @@ public class CodeV6 extends TimedRobot {
         }
     }
 }
- 
- 
  
