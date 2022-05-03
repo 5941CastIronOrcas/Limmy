@@ -181,10 +181,10 @@ public class CodeV6 extends TimedRobot {
         }
        
         //If the Lidar isn't working, just drive forward at 0.25x voltage until it works again
-        if(LidarIsBroken && TargetScreenX >= 0)
+        if(LidarIsBroken && TargetScreenX > 0)
         {
             System.out.println("Lidar Nonfunctional; Camera-Ranging Activated");
-            SensorDistance = IdealRange * 1.25f;
+            SensorDistance = IdealRange * 1.125f;
         }
         else if(LidarIsBroken && TargetScreenX < 0)
         {
