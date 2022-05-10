@@ -8,6 +8,7 @@ import org.opencv.imgproc.Imgproc;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -18,6 +19,8 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.vision.VisionThread;
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorSensorV3;
 //import com.revrobotics.CANSparkMax;
 //import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  
@@ -52,6 +55,8 @@ public class CodeV6 extends TimedRobot {
     public Accelerometer AccelerometerMain = new BuiltInAccelerometer();
     private final SerialPort DistanceSensor = new SerialPort(115200, SerialPort.Port.kMXP);
     private final SerialPort DebugPort = new SerialPort(115200, SerialPort.Port.kOnboard);
+    private final I2C.Port i2cPort = I2C.Port.kOnboard;
+    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
     public double SensorDistance;
     public double SensorDistanceOld;
     public double IdealRange;
@@ -181,12 +186,12 @@ public class CodeV6 extends TimedRobot {
         }
        
         //If the Lidar isn't working, just drive forward at 0.25x voltage until it works again
-        if(LidarIsBroken && TargetScreenX > 0)
+        if(LidarIsBroken && TargetScreenX > 0 && TargetScreenX != CameraScreenWidth / 2.0f)
         {
             System.out.println("Lidar Nonfunctional; Camera-Ranging Activated");
             SensorDistance = IdealRange * 1.125f;
         }
-        else if(LidarIsBroken && TargetScreenX < 0)
+        else if(LidarIsBroken && (TargetScreenX < 0 || TargetScreenX == CameraScreenWidth / 2.0f))
         {
             System.out.println("Lidar Nonfunctional; Could not switch to Camera-Ranging");
             SensorDistance = IdealRange;
@@ -338,7 +343,7 @@ public class CodeV6 extends TimedRobot {
  
        
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
-        
+       
     }
  
     public void LaunchSequenceInit()
@@ -353,12 +358,12 @@ public class CodeV6 extends TimedRobot {
             LaunchMotor.set(0);
             LoaderMotor.set(-0.25f);
         }
-        else if(LaunchSequenceTimer < 1.1)
+        else if(LaunchSequenceTimer < 1)
         {
             LaunchMotor.set(1);
             LoaderMotor.set(0);
         }
-        else if(LaunchSequenceTimer > 1.1)
+        else if(LaunchSequenceTimer > 1)
         {
             LaunchMotor.set(1);
             LoaderMotor.set(1);
