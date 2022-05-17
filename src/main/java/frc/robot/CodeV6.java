@@ -35,7 +35,8 @@ public class CodeV6 extends TimedRobot {
     public VictorSP ClimberMotor2 = new VictorSP(5);
     public VictorSP LoaderMotor = new VictorSP(6);
     public VictorSP LaunchMotor = new VictorSP(7);
-    public VictorSP ArmMotor = new VictorSP(8);
+    public VictorSP LaunchMotor2 = new VictorSP(8);
+    public VictorSP ArmMotor = new VictorSP(10);
     public VictorSP Light = new VictorSP(9);
  
     //public CANSparkMax LoaderMotorCAN = new CANSparkMax(0, MotorType.kBrushless);
@@ -98,6 +99,7 @@ public class CodeV6 extends TimedRobot {
         //RearLeftMotor.setInverted(true);
         LoaderMotor.setInverted(true);
         LaunchMotor.setInverted(true);
+        //LaunchMotor2.setInverted(true);
         //ClimberMotor1.setInverted(true);
         //ClimberMotor2.setInverted(true);
         IdealRange = 40;
@@ -353,19 +355,22 @@ public class CodeV6 extends TimedRobot {
     public void LaunchSequencePeriodic()
     {
         LaunchSequenceTimer += 0.02f;
-        if(LaunchSequenceTimer < 0.25)
+        if(LaunchSequenceTimer < 0.23) //Reverse Loader Motor time
         {
             LaunchMotor.set(0);
+            LaunchMotor2.set(0);
             LoaderMotor.set(-0.25f);
         }
-        else if(LaunchSequenceTimer < 1)
+        else if(LaunchSequenceTimer < 1.1f) // Launch Motor Spinup Time
         {
             LaunchMotor.set(1);
+            LaunchMotor2.set(1);
             LoaderMotor.set(0);
         }
-        else if(LaunchSequenceTimer > 1)
+        else if(LaunchSequenceTimer > 1.1f) //Launch Motor Spinup Time
         {
             LaunchMotor.set(1);
+            LaunchMotor2.set(1);
             LoaderMotor.set(1);
         }
  
@@ -373,6 +378,7 @@ public class CodeV6 extends TimedRobot {
     public void LaunchSequenceAbort()
     {
         LaunchMotor.set(0);
+        LaunchMotor2.set(0);
         LoaderMotor.set(0);
     }
  
