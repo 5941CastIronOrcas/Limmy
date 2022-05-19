@@ -21,8 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorSensorV3;
-//import com.revrobotics.CANSparkMax;
-//import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  
 public class CodeV6 extends TimedRobot {
    
@@ -98,7 +98,7 @@ public class CodeV6 extends TimedRobot {
         //FrontLeftMotor.setInverted(true);
         //RearLeftMotor.setInverted(true);
         LoaderMotor.setInverted(true);
-        LaunchMotor.setInverted(true);
+        //LaunchMotor.setInverted(true);
         //LaunchMotor2.setInverted(true);
         //ClimberMotor1.setInverted(true);
         //ClimberMotor2.setInverted(true);
@@ -273,6 +273,14 @@ public class CodeV6 extends TimedRobot {
             //If Locking is disabled, do nothing
             LockBasedTurn = 0;
             LockBasedMove = 0;
+            Light.set(0);
+        }
+        if(Controller.getLeftTriggerAxis() > 0)
+        {
+            Light.set(1);
+        }
+        else if(!LockingEnabled)
+        {
             Light.set(0);
         }
         //If something has gone horribly wrong, just disable the AutoRanger and/or AutoAimer
