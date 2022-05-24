@@ -71,6 +71,7 @@ public class CodeV6 extends TimedRobot {
  
     private final Object CAMERA_LOCK = new Object();
     private double cameraContourX;
+    private double cameraContourY;
    
     /*
     Instructions:
@@ -133,18 +134,22 @@ public class CodeV6 extends TimedRobot {
                 }
             }
             int camWidth = -1;
+            int camHeight = -1;
             if(largestContour != null)
             {
                 Rect rectangle = Imgproc.boundingRect(largestContour);
                 camWidth = rectangle.x + (rectangle.width/2);
+                camHeight = rectangle.y + (rectangle.height/2);
             }
             //Send some data to the SmartDashboard to look at
             SmartDashboard.putNumber("Target X Position", camWidth);
+            SmartDashboard.putNumber("Target Y Position", camHeight);
             SmartDashboard.putNumber("RNG", Math.random());
             SmartDashboard.putNumber("Number Of Targets", objs.length);
             //Witchcraft
             synchronized (CAMERA_LOCK) {
                 cameraContourX = camWidth;
+                cameraContourY = camHeight;
             }
         }).start();
  
@@ -155,6 +160,7 @@ public class CodeV6 extends TimedRobot {
         //Steal information from Withcraft
         synchronized (CAMERA_LOCK) {
             TargetScreenX = cameraContourX;
+            TargetScreenY = cameraContourY;
         }
         //Anti-Object-Permanence
         if(TargetScreenX < 0)
