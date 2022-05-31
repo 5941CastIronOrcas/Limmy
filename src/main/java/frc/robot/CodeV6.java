@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
@@ -32,12 +33,13 @@ public class CodeV6 extends TimedRobot {
     public VictorSP FrontLeftMotor = new VictorSP(2);
     public VictorSP RearLeftMotor = new VictorSP(3);
     public VictorSP ClimberMotor1 = new VictorSP(4);
-    public VictorSP ClimberMotor2 = new VictorSP(5);
+    public VictorSP ClimberMotor2 = new VictorSP(10);
     public VictorSP LoaderMotor = new VictorSP(6);
     public VictorSP LaunchMotor = new VictorSP(7);
     public VictorSP LaunchMotor2 = new VictorSP(8);
-    public VictorSP ArmMotor = new VictorSP(10);
+    public VictorSP ArmMotor = new VictorSP(5);
     public VictorSP Light = new VictorSP(9);
+    public Ultrasonic Sonar1 = new Ultrasonic(1, 0);
  
     //public CANSparkMax LoaderMotorCAN = new CANSparkMax(0, MotorType.kBrushless);
     //public CANSparkMax LaunchMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
@@ -113,6 +115,7 @@ public class CodeV6 extends TimedRobot {
         //LockTurnD = 0.0005;
         CameraScreenWidth = 640;
         CameraScreenHeight = 480;
+        Sonar1.setAutomaticMode(true);
  
        
        
@@ -207,6 +210,7 @@ public class CodeV6 extends TimedRobot {
  
         //Put the used Sensor Distance up on the dashboard
         SmartDashboard.putNumber("Sensor Distance", SensorDistance);
+        SmartDashboard.putNumber("Sonar Distance", Sonar1.getRangeInches());
     }
    
    
