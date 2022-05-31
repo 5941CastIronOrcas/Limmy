@@ -105,6 +105,7 @@ public class CodeV6 extends TimedRobot {
         //LaunchMotor2.setInverted(true);
         //ClimberMotor1.setInverted(true);
         //ClimberMotor2.setInverted(true);
+        ArmMotor.setInverted(true);
         IdealRange = 100;
         TurnMargin = 0.1;
         //RangeP = 0.0;
@@ -342,24 +343,18 @@ public class CodeV6 extends TimedRobot {
          }
  
        
-        //Manual Loader control
+        //Loader
         if(Controller.getBButton())
         {
             LoaderMotor.set(1);
+            ArmMotor.set(1);
         }
         if(Controller.getBButtonReleased())
         {
             LoaderMotor.set(0);
-        }
-        //Arm
-        if(Controller.getXButton())
-        {
-            ArmMotor.set(1.0);
-        }
-        else
-        {
             ArmMotor.set(0);
         }
+        
  
        
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
