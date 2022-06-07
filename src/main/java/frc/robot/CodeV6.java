@@ -188,6 +188,7 @@ public class CodeV6 extends TimedRobot {
         {
             SensorDistance = IdealRange;
             LidarIsBroken = true;
+            
            
         }
         if(SensorDistance <= 0)
@@ -467,4 +468,5 @@ public class CodeV6 extends TimedRobot {
         }
     }
 }
+
  
