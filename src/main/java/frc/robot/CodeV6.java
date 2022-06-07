@@ -201,7 +201,7 @@ public class CodeV6 extends TimedRobot {
         if(LidarIsBroken && TargetScreenX > 0 && TargetScreenX != CameraScreenWidth / 2.0f)
         {
             System.out.println("Lidar Nonfunctional; Camera-Ranging Activated");
-            SensorDistance = IdealRange * 1.125f;
+            SensorDistance = (-77955.5/(TargetScreenY-492.946)) - 106.815;
         }
         else if(LidarIsBroken && (TargetScreenX < 0 || TargetScreenX == CameraScreenWidth / 2.0f))
         {
