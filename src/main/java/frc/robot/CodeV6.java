@@ -208,7 +208,7 @@ public class CodeV6 extends TimedRobot {
             System.out.println("Lidar Nonfunctional; Could not switch to Camera-Ranging");
             SensorDistance = IdealRange;
         }
- 
+        
         //Put the used Sensor Distance up on the dashboard
         SmartDashboard.putNumber("Sensor Distance", SensorDistance);
         SmartDashboard.putNumber("Sonar Distance", Sonar1.getRangeInches());
