@@ -41,7 +41,7 @@ public class CodeV6 extends TimedRobot {
     public VictorSP Light = new VictorSP(9);
     public Ultrasonic Sonar1 = new Ultrasonic(1, 0);
  
-    //public CANSparkMax LoaderMotorCAN = new CANSparkMax(0, MotorType.kBrushless);
+    public CANSparkMax LoaderMotorCAN = new CANSparkMax(3, MotorType.kBrushless);
     //public CANSparkMax LaunchMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
     //public CANSparkMax ArmMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
     public double TargetScreenX;
@@ -361,6 +361,15 @@ public class CodeV6 extends TimedRobot {
         DebugPort.writeString("Distance: "+SensorDistance +"   "); //Send the distance in centimeters to the debug port
        //System.out.println("Light: "+Light.get());
        //Light.set(1);
+
+       if(Controller.getXButton())
+       {
+           LoaderMotorCAN.set(Controller.getRightX());
+       }
+       else
+       {
+           LoaderMotorCAN.set(0);
+       }
     }
  
     public void LaunchSequenceInit()
