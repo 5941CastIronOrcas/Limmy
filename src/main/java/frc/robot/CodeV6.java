@@ -250,13 +250,13 @@ public class CodeV6 extends TimedRobot {
            //If in range and on target rumble the controller to tell the driver to shoot
             if(Math.abs(LockBasedTurn) <= TurnMargin && Math.abs(LockBasedMove) <= 0.1)
             {
-                Controller.setRumble(RumbleType.kLeftRumble, 1);
-                Controller.setRumble(RumbleType.kRightRumble, 1);
+                //Controller.setRumble(RumbleType.kLeftRumble, 1);
+                //Controller.setRumble(RumbleType.kRightRumble, 1);
             }
             else
             {
-                Controller.setRumble(RumbleType.kLeftRumble, 0);
-                Controller.setRumble(RumbleType.kRightRumble, 0);
+                //Controller.setRumble(RumbleType.kLeftRumble, 0);
+                //Controller.setRumble(RumbleType.kRightRumble, 0);
             }
            
             //if pointing close enough to the target, drive forward or backwards to get in the correct range
@@ -348,7 +348,7 @@ public class CodeV6 extends TimedRobot {
         if(Controller.getBButton())
         {
             LoaderMotor.set(1);
-            ArmMotor.set(1);
+            ArmMotor.set(0.5);
         }
         if(Controller.getBButtonReleased())
         {
@@ -379,7 +379,7 @@ public class CodeV6 extends TimedRobot {
     public void LaunchSequencePeriodic()
     {
         LaunchSequenceTimer += 0.02f;
-        if(LaunchSequenceTimer < 0.23) //Reverse Loader Motor time
+        if(LaunchSequenceTimer < 0.18) //Reverse Loader Motor time
         {
             LaunchMotor.set(0);
             LaunchMotor2.set(0);
