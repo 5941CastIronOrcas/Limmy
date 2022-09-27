@@ -90,7 +90,7 @@ public class CodeV6 extends TimedRobot {
     Notes:
     On some controllers (like ours), up on the joystick is negative
     On motors Positive *appears* to be clockwise (but double-check anyway)
-    Cam IP: roboRIO-59410FRC.local:1181/?action=stream
+    Cam IP: roboRIO-5941-FRC.local:1181/?action=stream
     */
    
     public void robotInit() //Does all this when the robot is started
