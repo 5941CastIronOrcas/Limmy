@@ -22,16 +22,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorSensorV3;
+
+import javax.print.CancelablePrintJob;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  
 public class CodeV6 extends TimedRobot {
    
     public XboxController Controller = new XboxController(0);
-    public VictorSP FrontRightMotor = new VictorSP(0);
-    public VictorSP RearRightMotor = new VictorSP(1);
-    public VictorSP FrontLeftMotor = new VictorSP(2);
-    public VictorSP RearLeftMotor = new VictorSP(3);
+    //public VictorSP FrontRightMotor = new VictorSP(0);
+    //public VictorSP RearRightMotor = new VictorSP(1);
+    //public VictorSP FrontLeftMotor = new VictorSP(2);
+    //public VictorSP RearLeftMotor = new VictorSP(3);
+    public CANSparkMax FrontRightMotor = new CANSparkMax(2, MotorType.kBrushless);
+    public CANSparkMax FrontLeftMotor = new CANSparkMax(3, MotorType.kBrushless);
+    public CANSparkMax RearRightMotor = new CANSparkMax(4, MotorType.kBrushless);
+    public CANSparkMax RearLeftMotor = new CANSparkMax(5, MotorType.kBrushless);
     public VictorSP ClimberMotor1 = new VictorSP(4);
     public VictorSP ClimberMotor2 = new VictorSP(10);
     public VictorSP LoaderMotor = new VictorSP(6);
@@ -41,7 +48,7 @@ public class CodeV6 extends TimedRobot {
     public VictorSP Light = new VictorSP(9);
     public Ultrasonic Sonar1 = new Ultrasonic(1, 0);
  
-    public CANSparkMax LoaderMotorCAN = new CANSparkMax(3, MotorType.kBrushless);
+    public CANSparkMax LoaderMotorCAN = new CANSparkMax(6, MotorType.kBrushless);
     //public CANSparkMax LaunchMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
     //public CANSparkMax ArmMotorCAN = new CANSparkMax(1, MotorType.kBrushless);
     public double TargetScreenX;
