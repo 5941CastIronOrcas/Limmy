@@ -23,7 +23,7 @@ import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorSensorV3;
 
-import javax.print.CancelablePrintJob;
+
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -40,7 +40,7 @@ public class CodeV6 extends TimedRobot {
     public CANSparkMax RearRightMotor = new CANSparkMax(4, MotorType.kBrushless);
     public CANSparkMax RearLeftMotor = new CANSparkMax(5, MotorType.kBrushless);
     public VictorSP ClimberMotor1 = new VictorSP(4);
-    public VictorSP ClimberMotor2 = new VictorSP(10);
+    public VictorSP ClimberMotor2 = new VictorSP(00);
     public VictorSP LoaderMotor = new VictorSP(6);
     public VictorSP LaunchMotor = new VictorSP(7);
     public VictorSP LaunchMotor2 = new VictorSP(8);
@@ -255,7 +255,7 @@ public class CodeV6 extends TimedRobot {
             }
            
            //If in range and on target rumble the controller to tell the driver to shoot
-            if(Math.abs(LockBasedTurn) <= TurnMargin && Math.abs(LockBasedMove) <= 0.1)
+            if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
             {
                 //Controller.setRumble(RumbleType.kLeftRumble, 1);
                 //Controller.setRumble(RumbleType.kRightRumble, 1);
@@ -423,7 +423,7 @@ public class CodeV6 extends TimedRobot {
     }
     public void autonomousPeriodic() ////Does this every 0.02 seconds whenever the robot is autonomous
     {
-        //Drive backwards for 2 seconds, then let loose the targeting systems.  
+        //Drive backwards for some seconds, then let loose the targeting systems.  
         if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 2)
         {
             FrontRightMotor.set(-0.5);
@@ -447,7 +447,7 @@ public class CodeV6 extends TimedRobot {
             }
            
            //If in range and on target, do something, otherwise do something else
-            if(Math.abs(LockBasedTurn) <= TurnMargin && Math.abs(LockBasedMove) <= 0.1)
+            if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
             {
                
             }
@@ -457,7 +457,7 @@ public class CodeV6 extends TimedRobot {
             }
            
             //if pointing close enough to the target, drive forward or backwards to get in the correct range
-            if(LockBasedTurn <= TurnMargin)
+            if(TargetScreenX - (0.5 *  CameraScreenWidth) <= TurnMargin)
             {
                 LockBasedMove = (-(RangeP * (IdealRange - SensorDistance)) + (RangeD * ((SensorDistance - SensorDistanceOld) / 0.02)));
                 SensorDistanceOld = SensorDistance;
