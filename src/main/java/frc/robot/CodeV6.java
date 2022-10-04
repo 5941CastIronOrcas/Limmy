@@ -23,7 +23,7 @@ import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorSensorV3;
 
-
+import java.util.ResourceBundle.Control;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -31,6 +31,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class CodeV6 extends TimedRobot {
    
     public XboxController Controller = new XboxController(0);
+    public double LeftStickX;
+    public double LeftStickY;
+    public double RightStickX;
     //public VictorSP FrontRightMotor = new VictorSP(0);
     //public VictorSP RearRightMotor = new VictorSP(1);
     //public VictorSP FrontLeftMotor = new VictorSP(2);
@@ -225,6 +228,23 @@ public class CodeV6 extends TimedRobot {
    
     public void teleopPeriodic() //Does this every 0.02 seconds whenever the robot is teleoperated
     {
+        //Set the stick deadzone variables
+        RightStickX = Controller.getRightX();
+        LeftStickX = Controller.getLeftX();
+        LeftStickY = Controller.getLeftY();
+        if(Math.abs(RightStickX) < 0.05)
+        {
+            RightStickX = 0;
+        }
+        if(Math.abs(LeftStickX) < 0.05)
+        {
+            LeftStickX = 0;
+        }
+        if(Math.abs(LeftStickY) < 0.05)
+        {
+            LeftStickY = 0;
+        }
+        
         //Use the right trigger to enable locking
         if(Math.abs(Controller.getRightTriggerAxis()) > 0.05)
         {
@@ -312,10 +332,10 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn = 0;
         }
         //Final Drive motors voltage setting:
-        FrontRightMotor.set(-Controller.getLeftY() - Controller.getLeftX() + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearRightMotor.set(-Controller.getLeftY() - Controller.getLeftX() + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        FrontLeftMotor.set(-Controller.getLeftY() + Controller.getLeftX() + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearLeftMotor.set(-Controller.getLeftY() + Controller.getLeftX() + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontRightMotor.set(-LeftStickY - LeftStickX + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearRightMotor.set(-LeftStickY - LeftStickX + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontLeftMotor.set(-LeftStickY + LeftStickX + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set(-LeftStickY + LeftStickX + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
        
