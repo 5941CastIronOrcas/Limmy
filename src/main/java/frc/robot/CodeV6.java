@@ -453,7 +453,7 @@ public class CodeV6 extends TimedRobot {
             }
             else
             {
-               
+               LaunchSequenceAbort();
             }
            
             //if pointing close enough to the target, drive forward or backwards to get in the correct range
