@@ -79,6 +79,8 @@ public class CodeV6 extends TimedRobot {
     public double AutoStuffMultiplier;
     public float LaunchSequenceTimer;
     public boolean LidarIsBroken;
+    public double TurnMultiplier;
+    public double MaxSpeedMultiplier;
    
  
     private final Object CAMERA_LOCK = new Object();
@@ -127,6 +129,8 @@ public class CodeV6 extends TimedRobot {
         CameraScreenWidth = 640;
         CameraScreenHeight = 480;
         Sonar1.setAutomaticMode(true);
+        TurnMultiplier = 0.25;
+        MaxSpeedMultiplier = 0.5;
  
        
        
@@ -332,10 +336,10 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn = 0;
         }
         //Final Drive motors voltage setting:
-        FrontRightMotor.set(-LeftStickY - LeftStickX + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearRightMotor.set(-LeftStickY - LeftStickX + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        FrontLeftMotor.set(-LeftStickY + LeftStickX + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearLeftMotor.set(-LeftStickY + LeftStickX + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontRightMotor.set(-(MaxSpeedMultiplier * LeftStickY) - (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearRightMotor.set(-(MaxSpeedMultiplier * LeftStickY) - (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
        
