@@ -81,6 +81,7 @@ public class CodeV6 extends TimedRobot {
     public boolean LidarIsBroken;
     public double TurnMultiplier;
     public double MaxSpeedMultiplier;
+    public float AutoTimeOnTarget; //the amount of time the robot has been on target for in auto
    
  
     private final Object CAMERA_LOCK = new Object();
@@ -473,11 +474,19 @@ public class CodeV6 extends TimedRobot {
            //If in range and on target, do something, otherwise do something else
             if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
             {
-               
+               AutoTimeOnTarget += 0.02;
             }
             else
             {
-               LaunchSequenceAbort();
+               AutoTimeOnTarget = 0;
+            }
+            if(AutoTimeOnTarget > 2 && AutoTimeOnTarget < 2.02)
+            {
+                LaunchSequenceInit();
+            }
+            else if(AutoTimeOnTarget >= 2.02)
+            {
+                LaunchSequencePeriodic();
             }
            
             //if pointing close enough to the target, drive forward or backwards to get in the correct range
