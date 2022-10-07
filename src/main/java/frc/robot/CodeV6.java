@@ -119,8 +119,8 @@ public class CodeV6 extends TimedRobot {
         IdealRange = 100;
         TurnMargin = 0.1;
         //RangeP = 0.0;
-        RangeP = 0.02;
-        RangeD = 0.000;
+        RangeP = 0.01;
+        RangeD = 0.00;
         LockTurnP = 0.0;
         //LockTurnP = 0.8 / 640.0;
         //LockTurnD = 0.0005;
@@ -334,10 +334,10 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn = 0;
         }
         //Final Drive motors voltage setting:
-        FrontRightMotor.set((MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearRightMotor.set((MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        FrontLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * -LockBasedMove))));
-        RearLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * -LockBasedMove))));
+        FrontRightMotor.set((MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * -LockBasedMove))));
+        RearRightMotor.set((MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * -LockBasedMove))));
+        FrontLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
        
