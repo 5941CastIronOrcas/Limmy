@@ -40,8 +40,8 @@ public class CodeV6 extends TimedRobot {
     //public VictorSP RearLeftMotor = new VictorSP(3);
     public CANSparkMax FrontRightMotor = new CANSparkMax(2, MotorType.kBrushless);
     public CANSparkMax FrontLeftMotor = new CANSparkMax(3, MotorType.kBrushless);
-    public CANSparkMax RearRightMotor = new CANSparkMax(4, MotorType.kBrushless);
-    public CANSparkMax RearLeftMotor = new CANSparkMax(5, MotorType.kBrushless);
+    public CANSparkMax RearRightMotor = new CANSparkMax(5, MotorType.kBrushless);
+    public CANSparkMax RearLeftMotor = new CANSparkMax(4, MotorType.kBrushless);
     public VictorSP ClimberMotor1 = new VictorSP(4);
     public VictorSP ClimberMotor2 = new VictorSP(00);
     public VictorSP LoaderMotor = new VictorSP(6);
@@ -109,10 +109,7 @@ public class CodeV6 extends TimedRobot {
     public void robotInit() //Does all this when the robot is started
     {
         //Prep Veriables:
-        FrontRightMotor.setInverted(true);
-        RearRightMotor.setInverted(true);
-        //FrontLeftMotor.setInverted(true);
-        //RearLeftMotor.setInverted(true);
+        
         LoaderMotor.setInverted(true);
         //LaunchMotor.setInverted(true);
         //LaunchMotor2.setInverted(true);
@@ -339,8 +336,8 @@ public class CodeV6 extends TimedRobot {
         //Final Drive motors voltage setting:
         FrontRightMotor.set(-(MaxSpeedMultiplier * LeftStickY) - (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
         RearRightMotor.set(-(MaxSpeedMultiplier * LeftStickY) - (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (-LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        FrontLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontLeftMotor.set((MaxSpeedMultiplier * LeftStickY) - (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set((MaxSpeedMultiplier * LeftStickY) - (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
        
