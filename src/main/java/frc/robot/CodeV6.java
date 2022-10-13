@@ -119,19 +119,29 @@ public class CodeV6 extends TimedRobot {
         IdealRange = 100;
         TurnMargin = 0.1;
         //RangeP = 0.0;
-        RangeP = 0.01;
+        RangeP = 0.005;
         RangeD = 0.00;
         LockTurnP = 0.0;
-        //LockTurnP = 0.8 / 640.0;
+        LockTurnP = 0.4 / 640.0;
         //LockTurnD = 0.0005;
         CameraScreenWidth = 640;
         CameraScreenHeight = 480;
         Sonar1.setAutomaticMode(true);
         TurnMultiplier = 0.25;
         MaxSpeedMultiplier = 0.5;
+        
+        FrontRightMotor.set(0);
+        FrontLeftMotor.set(0);
+        RearRightMotor.set(0);
+        RearLeftMotor.set(0);
+        LaunchMotor.set(0);
+        LaunchMotor2.set(0);
+        ClimberMotor1.set(0);
+        ClimberMotor2.set(0);
+        ArmMotor.set(0);
+        LoaderMotor.set(0);
+        Light.set(0);
  
-       
-       
        
         //Create a new USB camera
         UsbCamera camera = CameraServer.startAutomaticCapture();
@@ -227,7 +237,21 @@ public class CodeV6 extends TimedRobot {
         SmartDashboard.putNumber("Sonar Distance", Sonar1.getRangeInches());
     }
    
-   
+   public void opInit() //Does this when initiated in teleop
+   {
+    FrontRightMotor.set(0);
+    FrontLeftMotor.set(0);
+    RearRightMotor.set(0);
+    RearLeftMotor.set(0);
+    LaunchMotor.set(0);
+    LaunchMotor2.set(0);
+    ClimberMotor1.set(0);
+    ClimberMotor2.set(0);
+    ArmMotor.set(0);
+    LoaderMotor.set(0);
+    Light.set(0);
+   }
+    
     public void teleopPeriodic() //Does this every 0.02 seconds whenever the robot is teleoperated
     {
         //Set the stick deadzone variables
@@ -334,10 +358,10 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn = 0;
         }
         //Final Drive motors voltage setting:
-        FrontRightMotor.set((MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * -LockBasedMove))));
-        RearRightMotor.set((MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * -LockBasedMove))));
-        FrontLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
-        RearLeftMotor.set(-(MaxSpeedMultiplier * LeftStickY) + (TurnMultiplier * LeftStickX) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        FrontRightMotor.set((MaxSpeedMultiplier * Math.pow(LeftStickY, 3)) + (TurnMultiplier * Math.pow(LeftStickX, 3)) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * -LockBasedMove))));
+        RearRightMotor.set((MaxSpeedMultiplier * Math.pow(LeftStickY, 3)) + (TurnMultiplier * Math.pow(LeftStickX, 3)) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * -LockBasedMove))));
+        FrontLeftMotor.set(-(MaxSpeedMultiplier * Math.pow(LeftStickY, 3)) + (TurnMultiplier * Math.pow(LeftStickX, 3)) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
+        RearLeftMotor.set(-(MaxSpeedMultiplier * Math.pow(LeftStickY, 3)) + (TurnMultiplier * Math.pow(LeftStickX, 3)) + (AutoStuffMultiplier * (LockBasedTurn + Math.sin(Math.PI * 0.5 * LockBasedMove))));
  
         //Manual Controls for non-drive motors:
        
@@ -371,6 +395,19 @@ public class CodeV6 extends TimedRobot {
          {
              LaunchSequenceAbort();
          }
+         //Launch Sequence 2
+         if(Controller.getYButtonPressed())
+         {
+             LaunchSequenceInit2();
+         }
+         if(Controller.getYButton())
+         {
+             LaunchSequencePeriodic2();
+         }
+         if(Controller.getYButtonReleased())
+         {
+             LaunchSequenceAbort2();
+         }
  
        
         //Loader
@@ -380,6 +417,17 @@ public class CodeV6 extends TimedRobot {
             ArmMotor.set(0.5);
         }
         if(Controller.getBButtonReleased())
+        {
+            LoaderMotor.set(0);
+            ArmMotor.set(0);
+        }
+        //Loader
+        if(Controller.getXButton())
+        {
+            LoaderMotor.set(-1);
+            ArmMotor.set(-0.5);
+        }
+        if(Controller.getXButtonReleased())
         {
             LoaderMotor.set(0);
             ArmMotor.set(0);
@@ -428,6 +476,39 @@ public class CodeV6 extends TimedRobot {
         }
  
     }
+    public void LaunchSequenceAbort2()
+    {
+        LaunchMotor.set(0);
+        LaunchMotor2.set(0);
+        LoaderMotor.set(0);
+    }
+    public void LaunchSequenceInit2()
+    {
+        LaunchSequenceTimer = 0;
+    }
+    public void LaunchSequencePeriodic2()
+    {
+        LaunchSequenceTimer += 0.02f;
+        if(LaunchSequenceTimer < 0.18) //Reverse Loader Motor time
+        {
+            LaunchMotor.set(0);
+            LaunchMotor2.set(0);
+            LoaderMotor.set(-0.25f);
+        }
+        else if(LaunchSequenceTimer < 1.1f) // Launch Motor Spinup Time
+        {
+            LaunchMotor.set(0.75);
+            LaunchMotor2.set(0.75);
+            LoaderMotor.set(0);
+        }
+        else if(LaunchSequenceTimer > 1.1f) //Launch Motor Spinup Time
+        {
+            LaunchMotor.set(0.75);
+            LaunchMotor2.set(0.75);
+            LoaderMotor.set(1);
+        }
+ 
+    }
     public void LaunchSequenceAbort()
     {
         LaunchMotor.set(0);
@@ -442,19 +523,43 @@ public class CodeV6 extends TimedRobot {
         TimeSinceStartAtAutoStart = Timer.getFPGATimestamp();
         LockBasedMove = 0;
         LockBasedTurn = 0;
+        FrontRightMotor.set(0);
+        FrontLeftMotor.set(0);
+        RearRightMotor.set(0);
+        RearLeftMotor.set(0);
+        LaunchMotor.set(0);
+        LaunchMotor2.set(0);
+        ClimberMotor1.set(0);
+        ClimberMotor2.set(0);
+        ArmMotor.set(0);
+        LoaderMotor.set(0);
+        Light.set(0);
     }
     public void autonomousPeriodic() ////Does this every 0.02 seconds whenever the robot is autonomous
     {
+        
         //Drive backwards for some seconds, then let loose the targeting systems.  
         if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 2)
         {
-            FrontRightMotor.set(-0.5);
-            RearRightMotor.set(-0.5);
-            FrontLeftMotor.set(-0.5);
-            RearLeftMotor.set(-0.5);
+            FrontRightMotor.set(0.25);
+            RearRightMotor.set(0.25);
+            FrontLeftMotor.set(-0.25);
+            RearLeftMotor.set(-0.25);
+        }
+        else if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 4)
+        {
+            FrontRightMotor.set(-0.25);
+            RearRightMotor.set(-0.25);
+            FrontLeftMotor.set(0.25);
+            RearLeftMotor.set(0.25);
         }
         else
         {
+            FrontRightMotor.set(0);
+            FrontLeftMotor.set(0);
+            RearRightMotor.set(0);
+            RearLeftMotor.set(0);
+
             //Turning equation for targeting the hub (a PID controller):
             LockBasedTurn =  (LockTurnP * (TargetScreenX - (0.5 *  CameraScreenWidth))) + (LockTurnD * ((TargetScreenX - TargetScreenXOld) / 0.02));
            TargetScreenXOld = TargetScreenX;
@@ -469,14 +574,14 @@ public class CodeV6 extends TimedRobot {
             }
            
            //If in range and on target, do something, otherwise do something else
-            if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
-            {
+            //if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
+            //{
                AutoTimeOnTarget += 0.02;
-            }
-            else
-            {
-               AutoTimeOnTarget = 0;
-            }
+            //}
+            //else
+            //{
+               //AutoTimeOnTarget = 0;
+            //}
             if(AutoTimeOnTarget > 2 && AutoTimeOnTarget < 2.02)
             {
                 LaunchSequenceInit();
@@ -484,6 +589,10 @@ public class CodeV6 extends TimedRobot {
             else if(AutoTimeOnTarget >= 2.02)
             {
                 LaunchSequencePeriodic();
+            }
+            else if(AutoTimeOnTarget >= 6)
+            {
+                LaunchSequenceAbort();
             }
            
             //if pointing close enough to the target, drive forward or backwards to get in the correct range
@@ -507,10 +616,10 @@ public class CodeV6 extends TimedRobot {
             }
  
             //Final Drive Motor Voltage Setting:
-            FrontRightMotor.set(-LockBasedTurn + LockBasedMove);
-            RearRightMotor.set(-LockBasedTurn + LockBasedMove);
-            FrontLeftMotor.set(LockBasedTurn + LockBasedMove);
-            RearLeftMotor.set(LockBasedTurn + LockBasedMove);
+            //FrontRightMotor.set(LockBasedTurn - LockBasedMove);
+            //RearRightMotor.set(LockBasedTurn - LockBasedMove);
+            //FrontLeftMotor.set(LockBasedTurn + LockBasedMove);
+            //RearLeftMotor.set(LockBasedTurn + LockBasedMove);
         }
     }
 }
