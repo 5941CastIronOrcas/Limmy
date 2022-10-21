@@ -116,7 +116,7 @@ public class CodeV6 extends TimedRobot {
         //LaunchMotor.setInverted(true);
         //LaunchMotor2.setInverted(true);
         //ClimberMotor1.setInverted(true);
-        //ClimberMotor2.setInverted(true);
+        ClimberMotor2.setInverted(true);
         //ArmMotor.setInverted(true);
         IdealRange = 100;
         TurnMargin = 0.1;
