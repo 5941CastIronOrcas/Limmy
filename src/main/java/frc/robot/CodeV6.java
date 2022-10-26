@@ -131,7 +131,7 @@ public class CodeV6 extends TimedRobot {
         Sonar1.setAutomaticMode(true);
         TurnMultiplier = 0.25;
         MaxSpeedMultiplier = 1;
-        LeftStickYSmoothRate = 0.04;
+        LeftStickYSmoothRate = 0.02;
         
         FrontRightMotor.set(0);
         FrontLeftMotor.set(0);
@@ -449,16 +449,20 @@ public class CodeV6 extends TimedRobot {
             LoaderMotor.set(0);
             ArmMotor.set(0);
         }
-        //Loader
+        //Eject
         if(Controller.getXButton())
         {
             LoaderMotor.set(-1);
             ArmMotor.set(-0.5);
+            LaunchMotor.set(-1);
+            LaunchMotor2.set(-1);
         }
         if(Controller.getXButtonReleased())
         {
             LoaderMotor.set(0);
             ArmMotor.set(0);
+            LaunchMotor.set(0);
+            LaunchMotor2.set(0);
         }
         
  
