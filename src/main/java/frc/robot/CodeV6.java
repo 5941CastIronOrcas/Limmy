@@ -236,7 +236,7 @@ public class CodeV6 extends TimedRobot {
         SmartDashboard.putNumber("Sensor Distance", SensorDistance);
         SmartDashboard.putNumber("Sonar Distance", Sonar1.getRangeInches());
         //If in range and on target rumble the controller to tell the driver to shoot
-        if((LockingEnabled || (Math.abs(Controller.getLeftTriggerAxis()) > 0.05)) && Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
+        if((LockingEnabled || (Math.abs(Controller.getLeftTriggerAxis()) > 0.05)) && Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3 && TargetScreenX >= 0)
         {
             TimeOnTarget += 0.02;
         }
@@ -347,7 +347,7 @@ public class CodeV6 extends TimedRobot {
             }*/
            
             //if pointing close enough to the target, drive forward or backwards to get in the correct range
-            if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin)
+            if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && TargetScreenX >= 0)
             {
                 TimeAlignedWithTarget += 0.02;
             }
