@@ -79,6 +79,7 @@ public class CodeV6 extends TimedRobot {
     public double RangeD;
     public double AutoStuffMultiplier;
     public double TimeAlignedWithTarget;
+    public double TimeOnTarget;
     public float LaunchSequenceTimer;
     public boolean LidarIsBroken;
     public double TurnMultiplier;
@@ -237,6 +238,14 @@ public class CodeV6 extends TimedRobot {
         //If in range and on target rumble the controller to tell the driver to shoot
         if((LockingEnabled || (Math.abs(Controller.getLeftTriggerAxis()) > 0.05)) && Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
         {
+            TimeOnTarget += 0.02;
+        }
+        else
+        {
+            TimeOnTarget = 0;
+        }
+        if(TimeOnTarget > 0.5)
+        {
             Controller.setRumble(RumbleType.kLeftRumble, 1);
             Controller.setRumble(RumbleType.kRightRumble, 1);
         }
@@ -346,7 +355,7 @@ public class CodeV6 extends TimedRobot {
             {
                 TimeAlignedWithTarget = 0;
             }
-            if(TimeAlignedWithTarget > 1)
+            if(TimeAlignedWithTarget > 0.5)
             {
                 LockBasedMove = (-(RangeP * (IdealRange - SensorDistance)) + (RangeD * ((SensorDistance - SensorDistanceOld) / 0.02)));
                 SensorDistanceOld = SensorDistance;
