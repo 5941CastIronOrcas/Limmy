@@ -78,6 +78,7 @@ public class CodeV6 extends TimedRobot {
     public double RangeP;
     public double RangeD;
     public double AutoStuffMultiplier;
+    public double TimeAlignedWithTarget;
     public float LaunchSequenceTimer;
     public boolean LidarIsBroken;
     public double TurnMultiplier;
@@ -118,13 +119,13 @@ public class CodeV6 extends TimedRobot {
         //ClimberMotor1.setInverted(true);
         ClimberMotor2.setInverted(true);
         ArmMotor.setInverted(true);
-        IdealRange = 100;
-        TurnMargin = 0.1;
+        IdealRange = 75;
+        TurnMargin = 20;
         //RangeP = 0.0;
-        RangeP = 0.005;
+        RangeP = 0.0025;
         RangeD = 0.00;
         LockTurnP = 0.0;
-        LockTurnP = 0.4 / 640.0;
+        LockTurnP = 0.8 / 640.0;
         //LockTurnD = 0.0005;
         CameraScreenWidth = 640;
         CameraScreenHeight = 480;
@@ -214,20 +215,15 @@ public class CodeV6 extends TimedRobot {
             SensorDistance = IdealRange;
             LidarIsBroken = true;
             
-           
         }
-        if(SensorDistance <= 0)
-        {
-            SensorDistance = IdealRange;
-            LidarIsBroken = true;
-           
-        }
+        LidarIsBroken = true;
+
        
         //If the Lidar isn't working, just drive forward at 0.25x voltage until it works again
         if(LidarIsBroken && TargetScreenX > 0 && TargetScreenX != CameraScreenWidth / 2.0f)
         {
             System.out.println("Lidar Nonfunctional; Camera-Ranging Activated");
-            SensorDistance = (-77955.5/(TargetScreenY-492.946)) - 106.815;
+            SensorDistance = (-274818.865067/(TargetScreenY-671.516935859)) - 359.078182692;
         }
         else if(LidarIsBroken && (TargetScreenX < 0 || TargetScreenX == CameraScreenWidth / 2.0f))
         {
@@ -238,6 +234,17 @@ public class CodeV6 extends TimedRobot {
         //Put the used Sensor Distance up on the dashboard
         SmartDashboard.putNumber("Sensor Distance", SensorDistance);
         SmartDashboard.putNumber("Sonar Distance", Sonar1.getRangeInches());
+        //If in range and on target rumble the controller to tell the driver to shoot
+        if((LockingEnabled || (Math.abs(Controller.getLeftTriggerAxis()) > 0.05)) && Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
+        {
+            Controller.setRumble(RumbleType.kLeftRumble, 1);
+            Controller.setRumble(RumbleType.kRightRumble, 1);
+        }
+        else
+        {
+            Controller.setRumble(RumbleType.kLeftRumble, 0);
+            Controller.setRumble(RumbleType.kRightRumble, 0);
+        }
     }
    
    public void teleopInit() //Does this when initiated in teleop
@@ -309,29 +316,37 @@ public class CodeV6 extends TimedRobot {
             LockBasedTurn =  (LockTurnP * (TargetScreenX - (0.5 *  CameraScreenWidth))) + (LockTurnD * ((TargetScreenX - TargetScreenXOld) / 0.02));
            TargetScreenXOld = TargetScreenX;
             //Prevent the AutoAim from becoming too powerful
-            if(LockBasedTurn > 1)
+            if(LockBasedTurn > .0625)
             {
-                LockBasedMove = 1;
+                LockBasedTurn = .0625;
             }
-            else if(LockBasedTurn < -1)
+            else if(LockBasedTurn < -.0625)
             {
-                LockBasedMove = -1;
+                LockBasedTurn = -.0625;
             }
-           
-           //If in range and on target rumble the controller to tell the driver to shoot
-            if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
+           /*
+            //If in range and on target rumble the controller to tell the driver to shoot
+            if((LockingEnabled || (Math.abs(Controller.getLeftTriggerAxis()) > 0.05)) && Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin && Math.abs(IdealRange - SensorDistance) <= 3)
             {
-                //Controller.setRumble(RumbleType.kLeftRumble, 1);
-                //Controller.setRumble(RumbleType.kRightRumble, 1);
+                Controller.setRumble(RumbleType.kLeftRumble, 1);
+                Controller.setRumble(RumbleType.kRightRumble, 1);
             }
             else
             {
-                //Controller.setRumble(RumbleType.kLeftRumble, 0);
-                //Controller.setRumble(RumbleType.kRightRumble, 0);
-            }
+                Controller.setRumble(RumbleType.kLeftRumble, 0);
+                Controller.setRumble(RumbleType.kRightRumble, 0);
+            }*/
            
             //if pointing close enough to the target, drive forward or backwards to get in the correct range
-            if(LockBasedTurn <= TurnMargin)
+            if(Math.abs(TargetScreenX - (0.5 *  CameraScreenWidth)) <= TurnMargin)
+            {
+                TimeAlignedWithTarget += 0.02;
+            }
+            else
+            {
+                TimeAlignedWithTarget = 0;
+            }
+            if(TimeAlignedWithTarget > 1)
             {
                 LockBasedMove = (-(RangeP * (IdealRange - SensorDistance)) + (RangeD * ((SensorDistance - SensorDistanceOld) / 0.02)));
                 SensorDistanceOld = SensorDistance;
@@ -341,13 +356,13 @@ public class CodeV6 extends TimedRobot {
                 LockBasedMove = 0;
             }
             //Prevent the AutoRanger from becoming too powerful
-            if(LockBasedMove > 0.25f)
+            if(LockBasedMove > 0.125f)
             {
-                LockBasedMove = 0.25f;
+                LockBasedMove = 0.125f;
             }
-            else if(LockBasedMove < -0.25f)
+            else if(LockBasedMove < -0.125f)
             {
-                LockBasedMove = -0.25f;
+                LockBasedMove = -0.125f;
             }
            
         }
@@ -576,12 +591,9 @@ public class CodeV6 extends TimedRobot {
             FrontLeftMotor.set(0);
             RearRightMotor.set(0);
             RearLeftMotor.set(0);
-            LaunchMotor.set(0);
-            LaunchMotor2.set(0);
             ClimberMotor1.set(0);
             ClimberMotor2.set(0);
             ArmMotor.set(0);
-            LoaderMotor.set(0);
             Light.set(0);
             AutoTimeOnTarget += 0.02;
             if(AutoTimeOnTarget > 1 && AutoTimeOnTarget < 1.02)
@@ -592,7 +604,7 @@ public class CodeV6 extends TimedRobot {
             {
                 LaunchSequencePeriodic();
             }
-            else if(AutoTimeOnTarget >= 3)
+            else if(AutoTimeOnTarget >= 2.5)
             {
                 LaunchSequenceAbort();
             }
@@ -604,6 +616,7 @@ public class CodeV6 extends TimedRobot {
             RearRightMotor.set(0.25);
             FrontLeftMotor.set(-0.25);
             RearLeftMotor.set(-0.25);
+            LaunchSequenceAbort();
         }
         else
         {
