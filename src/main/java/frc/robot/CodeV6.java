@@ -25,6 +25,8 @@ import com.revrobotics.ColorSensorV3;
 
 import java.util.ResourceBundle.Control;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  
@@ -107,7 +109,7 @@ public class CodeV6 extends TimedRobot {
     Notes:
     On some controllers (like ours), up on the joystick is negative
     On motors Positive *appears* to be clockwise (but double-check anyway)
-    Cam IP: roboRIO-5941-FRC.local:1181/?action=stream
+    Cam IP: http://roboRIO-5941-FRC.local:1181/?action=stream
     */
    
     public void robotInit() //Does all this when the robot is started
@@ -594,7 +596,38 @@ public class CodeV6 extends TimedRobot {
     public void autonomousPeriodic() ////Does this every 0.02 seconds whenever the robot is autonomous
     {
         //Fire ball for first 5 seconds
-        if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 5)
+        if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 4)
+        {
+            LockBasedMove = 0;
+            LockBasedTurn = 0;
+            FrontRightMotor.set(0);
+            FrontLeftMotor.set(0);
+            RearRightMotor.set(0);
+            RearLeftMotor.set(0);
+            LaunchMotor.set(0);
+            LaunchMotor2.set(0);
+            ClimberMotor1.set(0);
+            ClimberMotor2.set(0);
+            ArmMotor.set(0);
+            LoaderMotor.set(0);
+            Light.set(0);
+        }
+        else if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 6)
+        {
+            FrontRightMotor.set(0.25);
+            RearRightMotor.set(0.25);
+            FrontLeftMotor.set(-0.25);
+            RearLeftMotor.set(-0.25);
+        }
+        else if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 8)
+        {
+            FrontRightMotor.set(-0.25);
+            RearRightMotor.set(-0.25);
+            FrontLeftMotor.set(0.25);
+            RearLeftMotor.set(0.25);
+            AutoTimeOnTarget = 0;
+        }
+        else if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 13)
         {
             FrontRightMotor.set(0);
             FrontLeftMotor.set(0);
@@ -617,25 +650,11 @@ public class CodeV6 extends TimedRobot {
             {
                 LaunchSequenceAbort();
             }
-
-        }  
-        else if(Timer.getFPGATimestamp() - TimeSinceStartAtAutoStart < 7) //Drive backwards for some seconds
-        {
-            FrontRightMotor.set(0.25);
-            RearRightMotor.set(0.25);
-            FrontLeftMotor.set(-0.25);
-            RearLeftMotor.set(-0.25);
-            LaunchSequenceAbort();
         }
         else
         {
-            FrontRightMotor.set(0);
-            RearRightMotor.set(0);
-            FrontLeftMotor.set(0);
-            RearLeftMotor.set(0);
+            LaunchSequenceAbort();
         }
-        
-        
     }
 }
 

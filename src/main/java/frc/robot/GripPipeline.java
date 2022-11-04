@@ -41,9 +41,9 @@ public class GripPipeline implements VisionPipeline {
 	public void process(Mat source0) {
 		// Step RGB_Threshold0:
 		Mat rgbThresholdInput = source0;
-		double[] rgbThresholdRed = {0.0, 207};
-		double[] rgbThresholdGreen = {201, 255.0};
-		double[] rgbThresholdBlue = {0, 180};
+		double[] rgbThresholdRed = {0.0, 123};
+		double[] rgbThresholdGreen = {228, 255.0};
+		double[] rgbThresholdBlue = {0, 255};
 		rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, rgbThresholdOutput);
 
 		// Step Find_Contours0:
